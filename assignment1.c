@@ -49,7 +49,6 @@ int main(int argc, char **argv)
         x = getpid();
         printf("parent process (PID %d) created child_1 (PID %d) \n", x, pid1);
         printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n", x, pid1);
-        wait(NULL);
     }
     else if(pid1==0)
     {
