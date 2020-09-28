@@ -34,12 +34,12 @@ int main(int argc, char **argv)
 
 
 //
-//	printf("parent (PID %d) created child_2 (PID %d)\n", 0, 0);
-//	printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2..\n", 0);
+//
+//
 	// Hint: You might find snprintf() helpful in this assignment
 
 
-    pid_t x, y, pid1, pid2;
+    pid_t x, pid1, pid2;
 
     pid1=fork();
     pid2=fork();
@@ -49,12 +49,22 @@ int main(int argc, char **argv)
         x = getpid();
         printf("parent process (PID %d) created child_1 (PID %d) \n", x, pid1);
         printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n", x, pid1);
+        wait(NULL);
+        printf("parent (PID %d) created child_2 (PID %d)\n", x, pid2);
+
     }
     else if(pid1==0)
     {
-        printf("child_1 (PID %d) created child_1.1 (PID %d)\n", pid1, pid2);
-        printf("child_1 (PID %d) is now complete\n", pid1);
+        x = getpid();
+        printf("child_1 (PID %d) created child_1.1 (PID %d)\n", x, pid2);
+        printf("child_1 (PID %d) is now complete\n", x);
     }
+    else if(pid2==0)
+    {
+        x=getpid();
+        printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2..\n", x);
+    }
+
     // Unsuccessful fork execution
     else if(pid1<0)
     {
