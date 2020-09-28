@@ -30,28 +30,28 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-	// You must insert the following into your code (Replace zeros with the appropriate values/variables)
-
-
-//
-//
-//
-	// Hint: You might find snprintf() helpful in this assignment
-
 
     pid_t x, y, pid, pid2;
 
     pid=fork();
 
     if(pid<0){
-        printf("fork unsuccessful");
+        printf("fork unsuccessful\n");
     }
 
     if(pid>0){
         x = getpid();
         printf("parent process (PID %d) created child_1 (PID %d\n",x,pid);
         printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n", x, pid);
-        
+        wait(NULL);
+        printf("parent (PID %d) created child_2 (PID %d)\n", x, pid2);
+    }
+
+    if(pid==0){
+        x = getpid();
+        y = getppid();
+        printf("child_1 (PID %d) created child _1.1 (PID %d)\n", x, pid2);
+        printf("child_1 (PID %d) is now complete\n",x);
     }
 
 
