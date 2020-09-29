@@ -60,11 +60,12 @@ int main(int argc, char **argv)
 
     if(pid2==0){
         x=getpid();
-        int p = getpid();
+        char * mypid = (char *)malloc(sizeof(int));
+        * mypid = getpid();
         y=getppid();
         printf("parent (PID %d) created child_2 (PID %d)\n",x,y);
         printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2...");
-        status = execl("external_program.out","external_program.out",NULL);
+        status = execl("external_program.out",mypid,NULL);
     }
 
 
