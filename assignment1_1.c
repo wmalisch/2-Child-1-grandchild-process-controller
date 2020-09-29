@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
+#define INT2POINTER(a) ((char*)(intptr_t)(a))
 
 int main(int argc, char **argv)
 {
@@ -46,6 +47,7 @@ int main(int argc, char **argv)
         printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n",x,pid1);
         wait(NULL);
         printf("parent (PID %d) created child_2 (PID %d)\n",x,pid2);
+        wait(NULL);
     }
 
     // First child
@@ -58,8 +60,11 @@ int main(int argc, char **argv)
 
     // Second child
     if(pid1>0 && pid2==0){
-        x=getpid();
+        x = getpid();
+        char buff[100];
+        snprintf(buff,99,"%d",x);
         printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2...\n",x);
+        status = execl("external_program.out",buff,NULL);
     }
 
 
