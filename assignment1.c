@@ -34,24 +34,25 @@ int main(int argc, char **argv)
     pid_t x, y, pid1,pid2;
 
     pid1=fork();
-    if(pid1<0 || pid2<0){
-        printf("fork unsuccessful\n");
-    }
+
 
     // Parent process
-    if(pid1>0 && pid2>0){
+    if(pid1>0){
+        wait(NULL);
         x=getpid();
-        printf("parent process (PID %d) created child_1 (PID %d)\n",x,pid1);
-        printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n",x,pid1);
+        
         wait(NULL);
         printf("parent (PID %d) created child_2 (PID %d)\n",x,pid2);
         wait(NULL);
     }
 
     // First child
-    if(pid1==0 && pid2>0){
+    if(pid1==0){
         y=getppid();
         x=getpid();
+        printf("parent process (PID %d) created child_1 (PID %d)\n",y,x);
+        printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n",y,x);
+
         printf("child_1 (PID %d) created child_1.1 (PID %d)\n",x,pid2);
         printf("child_1 (PID %d) is now complete\n",x);
     }
@@ -64,6 +65,9 @@ int main(int argc, char **argv)
         status = execl("external_program.out",INT2POINTER(x),NULL);
     }
 
+    if(pid1<0 || pid2<0){
+        printf("fork unsuccessful\n");
+    }
 
     return 0;
 }
