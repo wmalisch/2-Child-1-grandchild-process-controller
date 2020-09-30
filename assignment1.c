@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	}
 
     int status;
-    pid_t x, y, pid1,pid2;
+    pid_t x, y, pid1,pid2, pid3;
 
     pid1=fork();
 
@@ -40,10 +40,20 @@ int main(int argc, char **argv)
     if(pid1>0){
         wait(NULL);
         x=getpid();
-        
-        wait(NULL);
-        printf("parent (PID %d) created child_2 (PID %d)\n",x,pid2);
-        wait(NULL);
+        pid3=fork();
+        printf("parent (PID %d) created child_2 (PID %d)\n",x,pid3);
+        if(pid3>0){
+            wait(NULL);
+
+        }
+        if(pid3==0){
+            x=getpid();
+            char buff[20];
+            snprintf(buff,19,"5d",x);
+            printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2...\n",x);
+            status = excel("external_program.out",buff,NULL);
+        }
+
     }
 
     // First child
@@ -52,20 +62,19 @@ int main(int argc, char **argv)
         x=getpid();
         printf("parent process (PID %d) created child_1 (PID %d)\n",y,x);
         printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n",y,x);
-
-        printf("child_1 (PID %d) created child_1.1 (PID %d)\n",x,pid2);
-        printf("child_1 (PID %d) is now complete\n",x);
+        pid2=fork();
+        if(pid2>0){
+            wait(NULL);
+            printf("child_1 (PID %d) is now complete\n",y);
+        }
+        if(pid2==0){
+            y=getppid();
+            x=getpid();
+            printf("child_1 (PID %d) created child_1.1 (PID %d)\n",y,x);
+        }
     }
 
-    // Second child
-    if(pid1>0 && pid2==0){
-        x = getpid();
-
-        printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2...\n",x);
-        status = execl("external_program.out",INT2POINTER(x),NULL);
-    }
-
-    if(pid1<0 || pid2<0){
+    if(pid1<0 || pid2<0 || pid3<0){
         printf("fork unsuccessful\n");
     }
 
