@@ -51,7 +51,7 @@ int main(int argc, char **argv)
             char buff[20];
             snprintf(buff,19,"5d",x);
             printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2...\n",x);
-            status = excel("external_program.out",buff,NULL);
+            status = execl("external_program.out",buff,NULL);
         }
 
     }
