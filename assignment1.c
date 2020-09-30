@@ -41,15 +41,17 @@ int main(int argc, char **argv)
         wait(NULL);
         x=getpid();
         pid3=fork();
-        printf("parent (PID %d) created child_2 (PID %d)\n",x,pid3);
+
         if(pid3>0){
+            x=getpid();
+            printf("parent (PID %d) created child_2 (PID %d)\n",x,pid3);
             wait(NULL);
 
         }
         if(pid3==0){
             x=getpid();
             char buff[20];
-            snprintf(buff,19,"5d",x);
+            snprintf(buff,19,"%d",x);
             printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2...\n",x);
             status = execl("external_program.out",buff,NULL);
         }
@@ -65,7 +67,7 @@ int main(int argc, char **argv)
         pid2=fork();
         if(pid2>0){
             wait(NULL);
-            printf("child_1 (PID %d) is now complete\n",y);
+            printf("child_1 (PID %d) is now complete\n",x);
         }
         if(pid2==0){
             y=getppid();
