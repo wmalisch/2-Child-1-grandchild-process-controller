@@ -30,16 +30,20 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
+	// Declare variables about to be used
     int status;
     pid_t x, y, pid1,pid2, pid3;
 
+    // Fork to create first child
     pid1=fork();
-
 
     // Parent process
     if(pid1>0){
+        // Wait until child processes are done (child 1 and 1.1)
         wait(NULL);
         x=getpid();
+
+        // Create child 2
         pid3=fork();
 
         if(pid3>0){
@@ -55,24 +59,36 @@ int main(int argc, char **argv)
             printf("child_2 (PID %d) is calling an external program external_program.out and leaving child_2...\n",x);
             status = execl("external_program.out",buff,NULL);
         }
+        // Error control
+        if(pid3<0){
+            printf("fork unsuccessful\n");
+        }
 
     }
 
-    // First child
+    // First child (child_1)
     if(pid1==0){
         y=getppid();
         x=getpid();
         printf("parent process (PID %d) created child_1 (PID %d)\n",y,x);
         printf("parent (PID %d) is waiting for child_1 (PID %d) to complete before creating child_2\n",y,x);
+        // Create child 1.1
         pid2=fork();
+        // Child_1
         if(pid2>0){
+            // Wait until child_1.1 is done before completing child_1
             wait(NULL);
             printf("child_1 (PID %d) is now complete\n",x);
         }
+        // Child_1.1
         if(pid2==0){
             y=getppid();
             x=getpid();
             printf("child_1 (PID %d) created child_1.1 (PID %d)\n",y,x);
+        }
+        // Error control
+        if(pid2<0){
+            printf("fork unsuccessful\n");
         }
     }
 
